@@ -1,63 +1,103 @@
-def example_tokenizer(input_string):
-    return input_string.split()
-
+import tiktoken
+import numpy as np
+from transformers import AutoTokenizer
+import vertexai
+from vertexai.generative_models import GenerativeModel
+from zhipuai import ZhipuAI
 class OpenAI:
-    def ChatGPT_40_Latest_20240903(self, input_string):
-        
+    def ChatGPT4oLatest(self, input_string):
         if not input_string:
-            return 0  # Return 0 for empty input
+            return 0
     
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
-        except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
+            encoder = tiktoken.get_encoding("ChatGPT-4o-latest(2024-09-03)")
+            tokens = encoder.encode(input_string)
+        except Exception as e:
+            print(f"Ocurrio un error al usar tiktoken: {e}")
+            tokens = np.nan
 
-        return len(tokens)
+        return tokens
     
-    def ChatGPT_40_Latest_20240718(self, input_string):
-        
+    def GPT4omini20240718(self, input_string):
         if not input_string:
-            return 0  # Return 0 for empty input
+            return 0
     
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
-        except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
+            encoder = tiktoken.get_encoding("GPT-4o-mini-2024-07-18")
+            tokens = encoder.encode(input_string)
+        except Exception as e:
+            print(f"Ocurrio un error al usar tiktoken: {e}")
+            tokens = np.nan
 
-        return len(tokens)
+        return tokens
     
     def o1_preview(self, input_string):
-        
         if not input_string:
             return 0
     
+        try:
+            encoder = tiktoken.get_encoding("o1-preview")
+            tokens = encoder.encode(input_string)
+        except Exception as e:
+            print(f"Ocurrio un error al usar tiktoken: {e}")
+            tokens = np.nan
+
+        return tokens
+    
     def o1_mini(self, input_string):
-        
         if not input_string:
             return 0
+    
+        try:
+            encoder = tiktoken.get_encoding("o1-mini")
+            tokens = encoder.encode(input_string)
+        except Exception as e:
+            print(f"Ocurrio un error al usar tiktoken: {e}")
+            tokens = np.nan
+
+        return tokens
+
 
 class Google:
     
     def Gemini_1_5_Pro_002(self, input_string):
         if not input_string:
-            return 0  # Return 0 for empty input
+            return 0
     
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
-        except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
+            model=GenerativeModel("google/gemini-1.5-pro-002")
+            tokens=model.count_tokens(input_string)
+            
+        except Exception as e:
+            print(f"Ocurrio un error:{e}")
+            tokens = np.nan
 
-        return len(tokens)
+        return tokens
     
     def Gemini_1_5_Flash_Exp_0827(self, input_string):
         if not input_string:
             return 0
+        
+        try:
+            model=GenerativeModel("google/gemini-1.5-flash-exp-0827")
+            tokens = model.count_tokens(input_string)
+        except Exception as e:
+            print(f"Ocurrio un error:{e}")
+            tokens = np.nan
+
+        return tokens
     
     def Gemma_2_27b_it(self, input_string):
         if not input_string:
             return 0
+        try:
+            model=GenerativeModel("google/gemma-2.27b-it")
+            tokens = model.count_tokens(input_string)
+        except Exception as e:
+            print(f"Ocurrio un error:{e}")
+            tokens = np.nan
 
-class _01AI:
+class a_01AI:
 
     def Yi_Lightning(self, input_string):
         
@@ -82,7 +122,7 @@ class _01AI:
         if not input_string:
             return 0
 
-class ZhipuAI:
+class zhipu_AI:
 
     def GLM_4_Plus(self, input_string):
         
@@ -90,16 +130,21 @@ class ZhipuAI:
             return 0  # Return 0 for empty input
     
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
-        except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
+            pass
+        except Exception as e:
+            print(f"{e}")
 
-        return len(tokens)
-    
-    def GLM_4_0520(self, input_string):
-        
+        return 0
+    def GLM_4_0520(self, input_string): 
         if not input_string:
             return 0
+        
+        try:
+            pass
+        except Exception as e:
+            print(f"{e}")
+        
+        return tokens
 
 class Anthropic:
     
@@ -152,26 +197,38 @@ class Meta:
 class Alibaba:
             
     def Qwen_Max_0919(self, input_string):
-    
         if not input_string:
             return 0  # Return 0 for empty input
-
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
+            tokenizer = AutoTokenizer.from_pretrained("alibaba/qwen-max-0919")
+            tokens = tokenizer.encode(input_string)
+            return tokens
         except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
-
-        return len(tokens)
+            tokens = np.nan
+        return tokens
     
     def Qwen2_5_72b_Instruct(self, input_string):
-        
         if not input_string:
             return 0
+        try:
+            tokenizer = AutoTokenizer.from_pretrained("alibaba/qwen2.5-72b-instruct")
+            tokens = tokenizer.encode(input_string)
+            return tokens
+        except Exception:
+            tokens = np.nan
+        return tokens
+
     
     def Qwen_Plus_0828(self, input_string):
-        
         if not input_string:
             return 0
+        try:
+            tokenizer = AutoTokenizer.from_pretrained("alibaba/qwen-plus-0828")
+            tokens = tokenizer.encode(input_string)
+            return tokens
+        except Exception:
+            tokens = np.nan
+        return tokens
 
 class DeepSeek:
     def Deepseek_v2_5(self, input_string):
@@ -262,11 +319,13 @@ class Princeton:
             return 0  # Return 0 for empty input
     
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
-        except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
+            model=GenerativeModel("princeton/gemma-2.9b-it-simpo")
+            tokens = model.count_tokens  # Replace with actual tokenizer logic
+        except Exception as e:
+            print(f"Ocurrio un error:{e}")
+            tokens = np.nan
 
-        return len(tokens)
+        return tokens
 
 class Cohere:
     def CommandR__08_2024_(self, input_string):
@@ -288,13 +347,9 @@ class Nvidia:
             return 0  # Return 0 for empty input
     
         try:
-            tokens = example_tokenizer(input_string)  # Replace with actual tokenizer logic
+            pass
         except Exception:
-            tokens = input_string.split()  # Fallback to simple split if tokenizer fails
+            pass
 
-        return len(tokens)
+        return 0
 
-# Usage example
-OpenAI = OpenAI()
-number_of_tokens = OpenAI.smartAI2024("This is a sample token count example.")
-print(number_of_tokens)  # Expected output: 7 (if using simple split logic)d
